@@ -19,6 +19,31 @@
 \usepackage[utf8x]{inputenc}
 \usepackage{tabulary}
 
+%% For Pretty In-Line Code:
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=SQL,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=4
+}
+
 \title[SQL Survival Guide]{SQL Survival Guide\\Joins}
 %\author{Andy Choens, MSW}
 \institute{Office of Quality and Patient Safety}
@@ -145,7 +170,9 @@
 %% Inner Joins -----------------------------------------------------------------
 \begin{frame}
   \frametitle{Inner Join - Discussion}
-  
+  \begin{lstlisting} 
+  select * from EMPLOYEES
+  \end{lstlisting}
 \end{frame}
 
 \begin{frame}
