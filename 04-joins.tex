@@ -105,11 +105,11 @@
   deserves additional discussion:
 
   \begin{enumerate}
+  \item Cross Join
   \item Inner Join
   \item Left Outer Join
   \item Right Outer Join
   \item Full Outer Join
-  \item Cross
   \item Self Join
   \end{enumerate}
 \end{frame}  
@@ -132,7 +132,7 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Offices}
+  \frametitle{Table: Departments}
 
   \begin{center}
     \begin{tabulary}{\textwidth}{CLC}
@@ -145,10 +145,13 @@
     \end{tabulary}
   \end{center}
 
+  \bigskip
+  Aliased as 'empl'.
+
 \end{frame}
 
 \begin{frame}
-  \frametitle{Employees}
+  \frametitle{Table: Employees}
 
   \begin{center}
     \begin{tabulary}{\textwidth}{RCLLC}
@@ -162,77 +165,133 @@
       11  & NULL     & Williams   & Serena      & F     \\
    \end{tabulary}
   \end{center}
+
+  \bigskip
+  Aliased as 'empl'.
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{SQL Clauses}
+  The following protected words in SQL should START a clause.
+  \begin{itemize}
+  \item SELECT
+  \item FROM
+  \item WHERE
+  \item HAVING
+  \end{itemize}
+
+  \bigskip
+  \pause
+  Style:
+  \begin{itemize}
+  \item Align SQL Clauses
+  \item Predicates should be indented consistently.
+  \end{itemize}
   
 \end{frame}
 
 \section{Examples} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% Inner Joins -----------------------------------------------------------------
+%% Cross Joins -----------------------------------------------------------------
 \begin{frame}
-  \frametitle{Inner Join - Discussion}
+  \frametitle{Cross Join: Discussion}
+  \begin{itemize}
+  \item Returns the Cartesian product of the tables in the FROM
+    clause.
+  \item This is bad.
+  \item These tables are tiny, so it doesn't really matter.
+  \item But if you do this on a table like RECIP\_PROFILE, you are
+    going to get a nasty call from Samir.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[containsverbatim]
+  \frametitle{Explicit Cross Join: Example}
+  \begin{lstlisting}
+   SELECT *
+   FROM EMPLOYEES empl cross join DEPARTMENTS dept
+   ; 
+  \end{lstlisting}
+  
+  \pause
+  \bigskip
+  This query returns 24 rows!
+  
+\end{frame}
+
+\begin{frame}[containsverbatim]
+  \frametitle{Explicit Cross Join: Example}
+  \begin{lstlisting}
+    SELECT *
+    FROM EMPLOYEES empl, DEPARTMENTS dept
+    ;
+
+  \end{lstlisting}
+  
+  \pause
+  \bigskip
+  This query returns 24 rows!
+  
+\end{frame}
+
+
+
+%% Inner Joins -----------------------------------------------------------------
+\begin{frame}[containsverbatim]
+  \frametitle{Inner Join: Discussion}
   \begin{lstlisting} 
-  select * from EMPLOYEES
+    select * from EMPLOYEES;
   \end{lstlisting}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Inner Join - Example}
+  \frametitle{Inner Join: Example}
   
 \end{frame}
 
 %% Left Outer Joins ------------------------------------------------------------
 \begin{frame}
-  \frametitle{Left Outer Join - Discussion}
-  
+  \frametitle{Left Outer Join: Discussion}
+  TODO
 \end{frame}
 
 \begin{frame}
-  \frametitle{Left Outer Join - Example}
-  
+  \frametitle{Left Outer Join: Example}
+  TODO
 \end{frame}
 
 %% Right Outer Joins -----------------------------------------------------------
 \begin{frame}
-  \frametitle{Right Outer Join - Discussion}
-  
+  \frametitle{Right Outer Join: Discussion}
+  TODO
 \end{frame}
 
 \begin{frame}
-  \frametitle{Right Outer Join - Example}
-  
+  \frametitle{Right Outer Join: Example}
+  TODO
 \end{frame}
 
 %% Full Outer Joins ------------------------------------------------------------
 \begin{frame}
-  \frametitle{Full Outer Join - Discussion}
-  
+  \frametitle{Full Outer Join: Discussion}
+  TODO
 \end{frame}
 
 \begin{frame}
-  \frametitle{Full Outer Join - Example}
-  
-\end{frame}
-
-%% Cross Joins -----------------------------------------------------------------
-\begin{frame}
-  \frametitle{Cross Join - Discussion}
-  
-\end{frame}
-
-\begin{frame}
-  \frametitle{Cross Join - Example}
-  
+  \frametitle{Full Outer Join: Example}
+  TODO
 \end{frame}
 
 %% Self Joins ------------------------------------------------------------------
 \begin{frame}
-  \frametitle{Self Join - Discussion}
-  
+  \frametitle{Self Join: Discussion}
+  TODO
 \end{frame}
 
 \begin{frame}
-  \frametitle{Self Join - Example}
-  
+  \frametitle{Self Join: Example}
+  TODO
 \end{frame}
 
 
