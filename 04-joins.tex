@@ -27,6 +27,12 @@
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
 \definecolor{mauve}{rgb}{0.58,0,0.82}
 
+\lstdefinestyle{customsql}{
+xleftmargin=4ex,
+language=SQL
+}
+
+
 \lstset{frame=tb,
   language=SQL,
   aboveskip=3mm,
@@ -34,15 +40,20 @@
   showstringspaces=false,
   columns=flexible,
   basicstyle={\small\ttfamily},
-  numbers=none,
+  numbers=left,
   numberstyle=\tiny\color{gray},
   keywordstyle=\color{blue},
   commentstyle=\color{dkgreen},
   stringstyle=\color{mauve},
   breaklines=true,
   breakatwhitespace=true,
-  tabsize=4
+  tabsize=2,
+  captionpos=b,
+  escapechar=@,
+  style=customsql
 }
+
+
 
 \title[SQL Survival Guide]{SQL Survival Guide\\Joins}
 %\author{Andy Choens, MSW}
@@ -206,36 +217,87 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}[containsverbatim]
+\begin{frame}[fragile]
   \frametitle{Explicit Cross Join: Example}
-  \begin{lstlisting}
+
+  Question: How many rows will the following query return?
+  \bigskip
+
+  \begin{lstlisting}[title={\tiny Source: https://github.com/Choens/sql-survival-guide/blob/master/sql/04-joins/cross-joins.sql}]
    SELECT *
    FROM EMPLOYEES empl cross join DEPARTMENTS dept
    ; 
   \end{lstlisting}
   
-  \pause
   \bigskip
-  This query returns 24 rows!
+  \pause 
+  Answer: 24 rows!
   
+\end{frame}
+
+\begin{frame}
+  \frametitle{Cross Join: Results}
+
+  \begin{center}
+    {\tiny
+      \begin{tabulary}{\textwidth}{RCLLCRLC}
+        EID & DEPT\_ID & LAST\_NAME & FIRST\_NAME & GENDER & DEPT\_ID & DEPT\_NAME  & DEPT\_FLOOR \\
+        \hline
+        1   & 31       & Rafferty   & Gerry       & M      & 31       & Sales       & 1           \\
+        1   & 31       & Rafferty   & Gerry       & M      & 33       & Engineering & 3           \\
+        1   & 31       & Rafferty   & Gerry       & M      & 34       & Clerical    & 2           \\
+        1   & 31       & Rafferty   & Gerry       & M      & 35       & Marketing   & 3           \\
+        3   & 33       & Jones      & Jon         & M      & 31       & Sales       & 1           \\
+        3   & 33       & Jones      & Jon         & M      & 33       & Engineering & 3           \\
+        3   & 33       & Jones      & Jon         & M      & 34       & Clerical    & 2           \\
+        3   & 33       & Jones      & Jon         & M      & 35       & Marketing   & 3           \\
+        5   & 33       & Heisenberg & Werner      & M      & 31       & Sales       & 1           \\
+        5   & 33       & Heisenberg & Werner      & M      & 33       & Engineering & 3           \\
+        5   & 33       & Heisenberg & Werner      & M      & 34       & Clerical    & 2           \\
+        5   & 33       & Heisenberg & Werner      & M      & 35       & Marketing   & 3           \\
+        7   & 34       & Robinson   & Elizabeth   & F      & 31       & Sales       & 1           \\
+        7   & 34       & Robinson   & Elizabeth   & F      & 33       & Engineering & 3           \\
+        7   & 34       & Robinson   & Elizabeth   & F      & 34       & Clerical    & 2           \\
+        7   & 34       & Robinson   & Elizabeth   & F      & 35       & Marketing   & 3           \\
+        9   & 34       & Smith      & Jefferson   & M      & 31       & Sales       & 1           \\
+        9   & 34       & Smith      & Jefferson   & M      & 33       & Engineering & 3           \\
+        9   & 34       & Smith      & Jefferson   & M      & 34       & Clerical    & 2           \\
+        9   & 34       & Smith      & Jefferson   & M      & 35       & Marketing   & 3           \\
+        11  & [NULL]   & Williams   & Serena      & F      & 31       & Sales       & 1           \\
+        11  & [NULL]   & Williams   & Serena      & F      & 33       & Engineering & 3           \\
+        11  & [NULL]   & Williams   & Serena      & F      & 34       & Clerical    & 2           \\
+        11  & [NULL]   & Williams   & Serena      & F      & 35       & Marketing   & 3           \\
+      \end{tabulary}
+    }
+  \end{center}
+
 \end{frame}
 
 \begin{frame}[containsverbatim]
-  \frametitle{Explicit Cross Join: Example}
-  \begin{lstlisting}
+  \frametitle{Implicit Cross Join: Example}
+ 
+  \begin{lstlisting}[title={\tiny Source: https://github.com/Choens/sql-survival-guide/blob/master/sql/04-joins/cross-joins.sql}]
     SELECT *
     FROM EMPLOYEES empl, DEPARTMENTS dept
     ;
-
   \end{lstlisting}
-  
-  \pause
   \bigskip
-  This query returns 24 rows!
+  \begin{itemize}
+  \item Also returns 24 rows.
+  \item You can do the same thing implicitly. (Don't!)
+  \item What does this look like?
+  \end{itemize}
   
 \end{frame}
 
-
+\begin{frame}
+  \frametitle{Cross Join: Results}
+  \begin{itemize}
+  \item Cross Joins Are Dangerous!
+  \item RECIP\_PROFILE == Phone Call From Samir.
+  \item IMPLICIT CROSS JOIN Looks Like IMPLICIT INNER JOIN.
+  \end{itemize}
+\end{frame}
 
 %% Inner Joins -----------------------------------------------------------------
 \begin{frame}[containsverbatim]
