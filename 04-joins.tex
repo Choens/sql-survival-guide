@@ -1,0 +1,226 @@
+\documentclass{beamer}
+% 
+% Choose how your presentation looks.
+% 
+% For more themes, color themes and font themes, see:
+% http://deic.uab.es/~iblanes/beamer_gallery/index_by_theme.html
+% 
+\mode<presentation>
+{
+  \usetheme{Madrid}      % or try Darmstadt, Madrid, Warsaw, ...
+  \usecolortheme{beaver} % or try albatross, beaver, crane, ...
+  \usefonttheme{default}  % or try serif, structurebold, ...
+  \setbeamertemplate{navigation symbols}{}
+  \setbeamertemplate{caption}[numbered]
+} 
+
+\usepackage{graphicx}
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage{tabulary}
+
+\title[SQL Survival Guide]{SQL Survival Guide\\Joins}
+%\author{Andy Choens, MSW}
+\institute{Office of Quality and Patient Safety}
+\date{May 18, 2015}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Outline}
+  \tableofcontents
+\end{frame}
+
+
+
+\section{What Is A Join Clause?} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{What Is A Join Clause?}
+  \pause
+  \begin{itemize}
+  \item Combines records from two or more tables.
+  \item Returns a set of records which can be saved as a table or used
+    as is.
+  \item Joins are probably the hardest core SQL skill to master.
+  \end{itemize}
+\end{frame}  
+
+\begin{frame}
+  \frametitle{Why Do We Have To Do This?}
+  \begin{itemize}
+  \item Normalization: 
+    \begin{itemize}
+    \item Eliminates duplication of data.
+    \item Makes it easier to maintain data integrity, at the cost of
+      speed.
+    \end{itemize}
+  \item DOH DataMart is NOT consistently normalized:
+    \begin{itemize}
+    \item Normalization deserves its own presentation.
+    \item Combines OLTP with Transactional Structures.
+    \item Sometimes easier. Sometimes Harder
+    \item Denormalized data == Mistakes.
+    \item Use normalized data structure unless data is COMPLETELY static.
+    \end{itemize}
+  \end{itemize}
+\end{frame}  
+
+
+
+\section{Types of SQL Joins} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Types of Joins}
+
+  There are 5 ANSI joins, plus one special case that
+  deserves additional discussion:
+
+  \begin{enumerate}
+  \item Inner Join
+  \item Left Outer Join
+  \item Right Outer Join
+  \item Full Outer Join
+  \item Cross
+  \item Self Join
+  \end{enumerate}
+\end{frame}  
+
+\begin{frame}
+  \frametitle{Data}
+
+  \begin{itemize}
+  \item We need example data.
+  \item The following two slides gives us two tables to use.
+    \begin{itemize}
+    \item Yes, you can join more than two tables at a time.
+    \end{itemize}
+  \item Keep track of these two table slides or you will get very
+    lost.
+  \item ALL SQL needed to produce the results in this presentation can
+    be found in the data and sql folders, respectively.
+  \end{itemize}
+ 
+\end{frame}
+
+\begin{frame}
+  \frametitle{Offices}
+
+  \begin{center}
+    \begin{tabulary}{\textwidth}{CLC}
+      DEPT\_ID & DEPARTMENT\_NAME & FLOOR \\
+      \hline
+      31       & Sales            & 1     \\
+      33       & Engineering      & 3     \\
+      34       & Clerical         & 2     \\
+      35       & Marketing        & 3     \\
+    \end{tabulary}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Employees}
+
+  \begin{center}
+    \begin{tabulary}{\textwidth}{RCLLC}
+      EID & DEPT\_ID & LAST\_NAME & FIRST\_NAME & GENDER\\
+      \hline
+      1   & 31       & Rafferty   & Gerry       & M     \\
+      3   & 33       & Jones      & Jon         & M     \\
+      5   & 33       & Heisenberg & Werner      & M      \\
+      7   & 34       & Robinson   & Elizabeth   & F      \\
+      9   & 34       & Smith      & Jefferson   & M      \\        
+      11  & NULL     & Williams   & Serena      & F      \\
+   \end{tabulary}
+  \end{center}
+  
+\end{frame}
+
+\section{Examples} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Inner Joins -----------------------------------------------------------------
+\begin{frame}
+  \frametitle{Inner Join - Discussion}
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Inner Join - Example}
+  
+\end{frame}
+
+%% Left Outer Joins ------------------------------------------------------------
+\begin{frame}
+  \frametitle{Left Outer Join - Discussion}
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Left Outer Join - Example}
+  
+\end{frame}
+
+%% Right Outer Joins -----------------------------------------------------------
+\begin{frame}
+  \frametitle{Right Outer Join - Discussion}
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Right Outer Join - Example}
+  
+\end{frame}
+
+%% Full Outer Joins ------------------------------------------------------------
+\begin{frame}
+  \frametitle{Full Outer Join - Discussion}
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Full Outer Join - Example}
+  
+\end{frame}
+
+%% Cross Joins -----------------------------------------------------------------
+\begin{frame}
+  \frametitle{Cross Join - Discussion}
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Cross Join - Example}
+  
+\end{frame}
+
+%% Self Joins ------------------------------------------------------------------
+\begin{frame}
+  \frametitle{Self Join - Discussion}
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Self Join - Example}
+  
+\end{frame}
+
+
+\section{Questions?}
+
+\begin{frame}
+  \frametitle{Additional Information}
+  \begin{itemize}
+  \item https://en.wikipedia.org/wiki/Join\_(SQL)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Questions?}
+
+\end{frame}
+
+\end{document}

@@ -1,11 +1,16 @@
-open: 
-	pdflatex    xx-joins.tex
-	pdflatex    xx-joins.tex
-	xdg-open xx-joins.pdf
+01-introduction: 01-introduction.tex
+	pdflatex 01-introduction.tex
+	pdflatex 01-introduction.tex
 
-pdf:
-	pdflatex    xx-joins.tex
-	pdflatex    xx-joins.tex
+01-introduction-open: 01-introduction.pd
+	xdg-open 01-introduction.pdf
+
+04-joins: 04-joins.tex
+	pdflatex 04-joins.tex
+	pdflatex 04-joins.tex
+
+04-joins-open: 04-joins.pdf
+	xdg-open 04-joins.pdf
 
 clean:
 	rm *.aux

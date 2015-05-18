@@ -22,7 +22,7 @@
   \par\bigskip
   {\Large\bfseries#1}\par\smallskip}
 
-\title[SQL Survival Guide - Joins]{SQL Survival Guide - Joins}
+\title[SQL Survival Guide]{SQL Survival Guide\\Joins}
 %\author{Andy Choens, MSW}
 \institute{Office of Quality and Patient Safety}
 \date{May 18, 2015}
@@ -38,10 +38,10 @@
   \tableofcontents
 \end{frame}
 
-\section{What Is A Join}
+\section{What Is A Union?}
 
 \begin{frame}
-  \frametitle{What Is A Join?}
+  \frametitle{What Is A Union?}
   \pause
   \begin{itemize}
   \item Inner Join
@@ -51,28 +51,6 @@
   \end{itemize}
 \end{frame}  
 
-\begin{frame}
-  \frametitle{Types of Joins}
-  \pause
-  \begin{itemize}
-  \item Inner Join
-  \item Left Join
-  \item Right Join
-  \item Full Outer Join
-  \end{itemize}
-\end{frame}  
-
-\begin{frame}
-  \frametitle{Inner Join}
-  
-  Each returned row corresponds to a set of
-\end{frame}
-
-\section{Questions?}
-
-\begin{frame}
- \frametitle{Questions?}
-
-\end{frame}
+\section{Union Examples}
 
 \end{document}
