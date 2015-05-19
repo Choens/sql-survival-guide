@@ -24,7 +24,7 @@
 \usepackage{color}
 
 \definecolor{dkgreen}{rgb}{0,0.6,0}
-\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{gray}{rgb}{0.95,0.95,0.95}
 \definecolor{mauve}{rgb}{0.58,0,0.82}
 
 \lstdefinestyle{customsql}{
@@ -33,7 +33,7 @@ language=SQL
 }
 
 
-\lstset{frame=tb,
+\lstset{frame=none,
   language=SQL,
   aboveskip=3mm,
   belowskip=3mm,
@@ -41,9 +41,10 @@ language=SQL
   columns=flexible,
   basicstyle={\small\ttfamily},
   numbers=left,
-  numberstyle=\tiny\color{gray},
+  numberstyle=\tiny\color{black},
   keywordstyle=\color{blue},
   commentstyle=\color{dkgreen},
+  backgroundcolor=\color{gray},
   stringstyle=\color{mauve},
   breaklines=true,
   breakatwhitespace=true,
@@ -90,6 +91,7 @@ language=SQL
   \begin{itemize}
   \item Normalization: 
     \begin{itemize}
+    \item There aren't enough Database Administrators to go around.
     \item Eliminates duplication of data.
     \item Makes it easier to maintain data integrity, at the cost of
       speed.
@@ -130,14 +132,19 @@ language=SQL
 
   \begin{itemize}
   \item We need example data.
-  \item The following two slides gives us two tables to use.
+  \item Two tables of data!
     \begin{itemize}
     \item Yes, you can join more than two tables at a time.
+    \item No, we won't do that today.
     \end{itemize}
-  \item Keep track of these two table slides or you will get very
-    lost.
-  \item ALL SQL needed to produce the results in this presentation can
-    be found in the data and sql folders, respectively.
+  \item Keep track of the next two slides.
+  \item Code provided:
+    \begin{itemize}
+    \item sql: All SQL code needed to build tables and run
+      queries. (Tested in Vertica.)
+    \item data: Prepared sqlite db files. Can be used by any JDBC or
+      ODBC compliant front-end.
+    \end{itemize}
   \end{itemize}
  
 \end{frame}
@@ -157,7 +164,7 @@ language=SQL
   \end{center}
 
   \bigskip
-  Aliased as 'empl'.
+  Note: Aliased as 'empl'.
 
 \end{frame}
 
@@ -178,13 +185,14 @@ language=SQL
   \end{center}
 
   \bigskip
-  Aliased as 'empl'.
+  Note: Aliased as 'empl'.
   
 \end{frame}
 
 \begin{frame}
   \frametitle{SQL Clauses}
-  The following protected words in SQL should START a clause.
+  The following protected SQL commands START a clause:
+  \smallskip
   \begin{itemize}
   \item SELECT
   \item FROM
@@ -195,9 +203,11 @@ language=SQL
   \bigskip
   \pause
   Style:
+  \smallskip
   \begin{itemize}
   \item Align SQL Clauses
   \item Predicates should be indented consistently.
+  \item Feel free to ask me why I structure SQL queries the way I do.
   \end{itemize}
   
 \end{frame}
@@ -209,7 +219,7 @@ language=SQL
   \frametitle{Cross Join: Discussion}
   \begin{itemize}
   \item Returns the Cartesian product of the tables in the FROM
-    clause.
+    clause. 
   \item This is bad.
   \item These tables are tiny, so it doesn't really matter.
   \item But if you do this on a table like RECIP\_PROFILE, you are
