@@ -6,7 +6,7 @@
 % http://deic.uab.es/~iblanes/beamer_gallery/index_by_theme.html
 % 
 \mode<presentation>{
-  % \usetheme{Madrid}      % or try Darmstadt, Madrid, Warsaw, ...
+  %\usetheme{Madrid}      % or try Darmstadt, Madrid, Warsaw, ...
   \usetheme{Boadilla}
   \usecolortheme{beaver} % or try albatross, beaver, crane, ...
   \usefonttheme{default}  % or try serif, structurebold, ...
@@ -28,8 +28,8 @@
 \definecolor{mauve}{rgb}{0.58,0,0.82}
 
 \lstdefinestyle{customsql}{
-  xleftmargin=4ex,
-  language=SQL
+  xleftmargin=4ex
+  ,language=SQL
 }
 
 
@@ -70,12 +70,13 @@
 \begin{document}
 
 \begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  \titlepage{}
+  \titlepage
 \end{frame}
 
 \begin{frame}{Outline} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   \tableofcontents
 \end{frame}
+
 
 
 
@@ -97,6 +98,7 @@
     \begin{itemize}
     \item \url{https://en.wikipedia.org/wiki/Join\_(SQL)}
     \end{itemize}
+  \item Example data in SQLite: data/04-joins.sqlite.
   \end{itemize}
   
 \end{frame}
@@ -122,6 +124,7 @@
 \end{frame}
 
 \begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
   \frametitle{Table: DEPARTMENTS}
 
   \begin{center}
@@ -136,7 +139,6 @@
 
     \bigskip
     \textbf{Aliased as `dept'.}
-
   \end{center}
 
 \end{frame}
@@ -158,7 +160,6 @@
 
     \bigskip
     \textbf{Aliased as `empl'.}
-
   \end{center}
   
 \end{frame}
@@ -175,7 +176,6 @@
   \item We need a common set of terms to discuss SQL Joins.
   \item If I use a term you don't recognize, stop me.
   \end{itemize}
-  
 
 \end{frame}  
 
@@ -191,7 +191,7 @@
   \item Foreign keys make it possible to link rows in one table to
     rows in another table.
     \begin{itemize}
-    \item In the EMPLOYESS table, DEPT\_ID is a foreign key.
+    \item In the EMPLOYEES table, DEPT\_ID is a foreign key.
     \end{itemize}
   \end{itemize}
 
@@ -291,6 +291,68 @@
   \item The optimizer may reorganize query (relational algebra).
   \item Sometimes writing things out of order can bite you.
   \item Examples of such a problem is forthcoming.
+  \end{itemize}
+  
+\end{frame}  
+
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Result Set}
+
+  \begin{itemize}
+  \item The FIRST thing you should write.
+  \item Combines records from two or more tables (result set).
+  \item SQL Joins are a difficult skill to master.
+  \item They are necessary for working with normalized, relational
+    data.
+  \end{itemize}
+
+\end{frame}  
+
+
+
+\section{SQL Order Of Operations} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Order of Operations}
+
+  What is the answer to this (silly) equation?
+
+  \bigskip
+  \[\sqrt{(2^2+2) \cdot 6}\]
+
+  \bigskip
+  \pause
+  And how were we all able to come up with the same answer?
+
+\end{frame}
+
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Order of Operations}
+
+  Just like math, SQL has an order of operations: 
+
+  \medskip
+  \begin{enumerate}
+  \item FROM
+  \item WHERE
+  \item GROUP BY
+  \item SELECT
+  \item HAVING
+  \item ORDER BY
+  \end{enumerate}
+
+\end{frame}
+
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Order of Operations}
+
+  Some last order of operation notes:
+
+  \bigskip
+  \begin{itemize}
+  \item Sub-queries are run before the outer query.
+  \item The optimizer may reorganize query (relational algebra).
+  \item Sometimes writing things out of order can bite you.
   \end{itemize}
   
 \end{frame}
@@ -514,10 +576,10 @@
     from EMPLOYEES empl, DEPARTMENTS dept
     ;
   \end{lstlisting}
+
   \bigskip
-  
+  \pause
   \textbf{Answer: } Returns the same 24 rows.
-  
   
 \end{frame}
 
@@ -636,7 +698,6 @@
             5   & 33       & Heisenberg & Werner      & \rightarrow \\
           \end{tabulary}
         }
-
       \end{center}
     \end{column}
     
@@ -656,7 +717,6 @@
       \end{center}
 
     \end{column}
-
   \end{columns}
 
   \bigskip
@@ -1524,7 +1584,7 @@
   \bigskip
   \textbf{Result:}
   \begin{itemize}
-  \item The sub-query (LAST SALE) is run first. It returns only 1 row.
+  \item The sub-query (LAST SALE) is run first. It returns 1 row.
   \item Inner Join returns matching rows between SALE and LAST
     SALE.
   \item Each copy of a table must have a unique alias.
@@ -1536,7 +1596,7 @@
 \begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   \frametitle{Self Outer Join: Result Set}
   \begin{center}
-    {\tiny
+    {\small
       \begin{tabulary}{\textwidth}{CLCC}
         SALE\_ID & EID  & SALE\_VAL & SALE\_DT    \\
         \hline
