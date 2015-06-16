@@ -45,3 +45,11 @@ insert into EMPLOYEES values(11, NULL, 'Williams'  , 'Serena'   , 'F');
 -- After running this script, please open the DEPARTMENTS and EMPLOYEES 
 -- tables, in your home schema, to confirm that they exist and have the 
 -- correct number of rows
+
+
+
+-- ============================================================================
+-- SALES
+-- ============================================================================
+
+TODO

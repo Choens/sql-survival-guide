@@ -9,7 +9,10 @@ Presentations (Presentations followed by a * do not exist, yet.):
 - 03 - Subqueries *
 - 04 - Joins
 - 05 - Set Operations
-- 05 - Window Functions *
-- 05 - Data Definition Language *
+- 06 - Window Functions *
+- 07 - Data Definition Language *
+- 08 - Differences Between Oracle and Vertica
+- 09 - SAS Proc SQL
+- 10 - SQL and R
 
 Each presentation has a separate entry in the Makefile.

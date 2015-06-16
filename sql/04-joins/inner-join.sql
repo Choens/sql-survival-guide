@@ -6,6 +6,19 @@
 -- #############################################################################
 
 -- -----------------------------------------------------------------------------
+-- EXPLICIT INNER JOIN
+--
+-- This is the preferred way of writing an INNER JOIN.
+--
+-- -----------------------------------------------------------------------------
+SELECT *
+FROM EMPLOYEES empl INNER JOIN  DEPARTMENTS dept 
+    ON empl.dept_id = dept.dept_id
+;
+
+
+
+-- -----------------------------------------------------------------------------
 -- IMPLICIT INNER JOIN
 --
 -- This is how a lot of people write INNER JOINs.
@@ -20,20 +33,7 @@ WHERE empl.dept_id = dept.dept_id
 ;
 
 
-
--- -----------------------------------------------------------------------------
--- EXPLICIT INNER JOIN
---
--- This is the preferred way of writing an INNER JOIN.
---
--- -----------------------------------------------------------------------------
-SELECT *
-FROM EMPLOYEES empl INNER JOIN  DEPARTMENTS dept 
-    ON empl.dept_id = dept.dept_id
-;
-    
-
-    
+   
 -- -----------------------------------------------------------------------------
 -- EQUI JOIN
 --

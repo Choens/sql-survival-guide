@@ -5,9 +5,9 @@
 % For more themes, color themes and font themes, see:
 % http://deic.uab.es/~iblanes/beamer_gallery/index_by_theme.html
 % 
-\mode<presentation>
-{
-  \usetheme{Madrid}      % or try Darmstadt, Madrid, Warsaw, ...
+\mode<presentation>{
+  % \usetheme{Madrid}      % or try Darmstadt, Madrid, Warsaw, ...
+  \usetheme{Boadilla}
   \usecolortheme{beaver} % or try albatross, beaver, crane, ...
   \usefonttheme{default}  % or try serif, structurebold, ...
   \setbeamertemplate{navigation symbols}{}
@@ -28,12 +28,13 @@
 \definecolor{mauve}{rgb}{0.58,0,0.82}
 
 \lstdefinestyle{customsql}{
-xleftmargin=4ex,
-language=SQL
+  xleftmargin=4ex,
+  language=SQL
 }
 
 
-\lstset{frame=none,
+\lstset{
+  frame=none,
   language=SQL,
   aboveskip=3mm,
   belowskip=3mm,
@@ -54,103 +55,74 @@ language=SQL
   style=customsql
 }
 
+\AtBeginSection[]{
+  \begin{frame}<beamer>
+    \frametitle{Outline for section \thesection}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
 
-
-\title[SQL Survival Guide]{SQL Survival Guide\\Joins}
-%\author{Andy Choens, MSW}
-\institute{Office of Quality and Patient Safety}
-\date{May 18, 2015}
+\title[SQL Survival Guide]{SQL Survival Guide:\\Joins}
+\author{Andy Choens}
+\institute{EBCoP}
+\date{June 17, 2015}
 
 \begin{document}
 
-\begin{frame}
-  \titlepage
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \titlepage{}
 \end{frame}
 
-\begin{frame}{Outline}
+\begin{frame}{Outline} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   \tableofcontents
 \end{frame}
 
 
 
-\section{What Is A Join Clause?} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Resources} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}
-  \frametitle{What Is A Join Clause?}
-  \pause
-  \begin{itemize}
-  \item Combines records from two or more tables.
-  \item Returns a set of records which can be saved as a table or used
-    as is.
-  \item Joins are probably the hardest core SQL skill to master.
-  \end{itemize}
-\end{frame}  
+\subsection{Learning Resources} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}
-  \frametitle{Why Do We Have To Do This?}
-  \begin{itemize}
-  \item Normalization: 
-    \begin{itemize}
-    \item There aren't enough Database Administrators to go around.
-    \item Eliminates duplication of data.
-    \item Makes it easier to maintain data integrity, at the cost of
-      speed.
-    \end{itemize}
-  \item DOH DataMart is NOT consistently normalized:
-    \begin{itemize}
-    \item Normalization deserves its own presentation.
-    \item Combines OLTP with Transactional Structures.
-    \item Sometimes easier. Sometimes Harder
-    \item Denormalized data == Mistakes.
-    \item Use normalized data structure unless data is COMPLETELY static.
-    \end{itemize}
-  \end{itemize}
-\end{frame}  
-
-
-
-\section{Types of SQL Joins} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{frame}
-  \frametitle{Types of Joins}
-
-  There are 5 ANSI joins, plus one special case that
-  deserves additional discussion:
-
-  \begin{enumerate}
-  \item Cross Join
-  \item Inner Join
-  \item Left Outer Join
-  \item Right Outer Join
-  \item Full Outer Join
-  \item Self Join
-  \end{enumerate}
-\end{frame}  
-
-\begin{frame}
-  \frametitle{Data}
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{SQL Survival Guide}
 
   \begin{itemize}
-  \item We need example data.
-  \item Two tables of data!
+  \item \textbf{Additional Presentation Resources:}
     \begin{itemize}
-    \item Yes, you can join more than two tables at a time.
-    \item No, we won't do that today.
+    \item \url{https://github.com/choens/sql-survival-guide}
+    \item \textbf{SQL Queries:} ``sql/04-joins/''
+    \item \textbf{Data Provided (SQLite):} ``data/04-joins.sqlite''
     \end{itemize}
-  \item Keep track of the next two slides.
-  \item Code provided:
+  \item \textbf{Further Reading:}
     \begin{itemize}
-    \item sql: All SQL code needed to build tables and run
-      queries. (Tested in Vertica.)
-    \item data: Prepared sqlite db files. Can be used by any JDBC or
-      ODBC compliant front-end.
+    \item \url{https://en.wikipedia.org/wiki/Join\_(SQL)}
     \end{itemize}
   \end{itemize}
- 
+  
 \end{frame}
 
-\begin{frame}
-  \frametitle{Table: Departments}
+\subsection{Example Data} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Example Data}
+
+  \begin{itemize}
+  \item \textbf{Two tables of example data:}
+    \begin{itemize}
+    \item DEPARTMENTS
+    \item EMPLOYEES
+    \end{itemize}
+  \item \textbf{SQL Queries:} ``sql/04-joins/''
+    \begin{itemize}
+    \item create\_tables.sql: Creates the example tables.
+    \item Other files contain example queries.
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Table: DEPARTMENTS}
 
   \begin{center}
     \begin{tabulary}{\textwidth}{CLC}
@@ -161,15 +133,16 @@ language=SQL
       34       & Clerical    & 2           \\
       35       & Marketing   & 3           \\
     \end{tabulary}
-  \end{center}
 
-  \bigskip
-  Note: Aliased as 'empl'.
+    \bigskip
+    \textbf{Aliased as `dept'.}
+
+  \end{center}
 
 \end{frame}
 
-\begin{frame}
-  \frametitle{Table: Employees}
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Table: EMPLOYEES}
 
   \begin{center}
     \begin{tabulary}{\textwidth}{RCLLC}
@@ -181,17 +154,54 @@ language=SQL
       7   & 34       & Robinson   & Elizabeth   & F     \\
       9   & 34       & Smith      & Jefferson   & M     \\        
       11  & NULL     & Williams   & Serena      & F     \\
-   \end{tabulary}
-  \end{center}
+    \end{tabulary}
 
-  \bigskip
-  Note: Aliased as 'empl'.
+    \bigskip
+    \textbf{Aliased as `empl'.}
+
+  \end{center}
   
 \end{frame}
 
-\begin{frame}
-  \frametitle{SQL Clauses}
-  The following protected SQL commands START a clause:
+
+
+\section{Dafynitions} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Dafynitions}
+
+  \textbf{Why:}
+  \begin{itemize}
+  \item We need a common set of terms to discuss SQL Joins.
+  \item If I use a term you don't recognize, stop me.
+  \end{itemize}
+  
+
+\end{frame}  
+
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Dafynition: Relational Data \footnote{https://en.wikipedia.org/wiki/Relational\_database}}
+
+  \textbf{Relational Data:}
+  \begin{itemize}
+  \item Based on the relational model, as proposed by E.F. Codd in
+    1970.
+  \item Data is organized into one or more tables (relations) with a
+    unique key for each row.
+  \item Foreign keys make it possible to link rows in one table to
+    rows in another table.
+    \begin{itemize}
+    \item In the EMPLOYESS table, DEPT\_ID is a foreign key.
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}  
+
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Dafynition: Clause\footnote{https://en.wikipedia.org/wiki/SQL\#Language\_elements}}
+  
+  The following protected words denote a SQL clause:
+
   \smallskip
   \begin{itemize}
   \item SELECT
@@ -199,54 +209,264 @@ language=SQL
   \item WHERE
   \item HAVING
   \end{itemize}
-
+  
   \bigskip
   \pause
   Style:
-  \smallskip
   \begin{itemize}
   \item Align SQL Clauses
-  \item Predicates should be indented consistently.
-  \item Feel free to ask me why I structure SQL queries the way I do.
+  \item Sub-clauses should be consistently indented.
+  \end{itemize}
+  
+\end{frame}  
+
+\begin{frame}[fragile] %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Dafynition: Join Clause\footnote{https://en.wikipedia.org/wiki/Join\_(SQL)}}
+
+  \begin{lstlisting}
+    from EMPLOYEES empl inner join DEPARTMENTS dept
+    on empl.dept_id = dept.dept_id
+  \end{lstlisting}
+
+  \begin{itemize}
+  \item The FIRST thing you should write.
+  \item Combines records from two or more tables (result set).
+  \item SQL Joins are a difficult skill to master.
+  \end{itemize}
+
+\end{frame}  
+
+
+
+\section{Order Of Operations} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Order of Operations: Math}
+
+  \textbf{Question: }What is the answer to this equation?
+
+  \bigskip
+  \[\sqrt{(2^2+2) \cdot 6}\]
+
+  \pause
+  \bigskip
+  \textbf{Anwer:} 6
+
+  \bigskip
+  \pause
+  \textbf{Question: }How were we all able to come up with the same
+  answer?
+
+  \pause
+  \bigskip
+  \textbf{Answer:} Mathematical Order of Operations
+
+\end{frame}
+
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Order of Operations: SQL}
+
+  \textbf{SQL Order Of Operations: }
+
+  \medskip
+  \begin{enumerate}
+  \item FROM
+  \item WHERE
+  \item GROUP BY
+  \item SELECT
+  \item HAVING
+  \item ORDER BY
+  \end{enumerate}
+
+\end{frame}
+
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Order of Operations: SQL}
+
+  \textbf{SQL Order Of Operations --- Notes:}
+
+  \bigskip
+  \begin{itemize}
+  \item Sub-queries are run before the outer query.
+  \item The optimizer may reorganize query (relational algebra).
+  \item Sometimes writing things out of order can bite you.
+  \item Examples of such a problem is forthcoming.
   \end{itemize}
   
 \end{frame}
 
-\section{Examples} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Dafynition: Result Set\footnote{https://en.wikipedia.org/wiki/Result\_set}}
 
-%% Cross Joins -----------------------------------------------------------------
+  SQL Output (Result Set):
+
+  \begin{itemize}
+  \item A set of rows from a database.
+  \item Effectively a table.
+  \end{itemize}
+
+  \pause
+  \begin{center}
+  \bigskip \textbf{Pro Tip: } Imagine that each step in the order of
+  operations produces a result set, and passes it to the next next
+  clause.
+
+  \end{center}
+
+
+\end{frame}  
+
+\section{ANSI  Joins} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Types of Joins}
+
+  \textbf{ANSI joins:}
+
+  \smallskip
+
+  \begin{columns}
+
+    \begin{column}{.5\textwidth}
+      \begin{enumerate}
+      \item {\color{red}Cross Join}
+      \item \textbf{Inner Join}
+      \item \textbf{Left Outer Join}
+      \item Right Outer Join
+      \item Full Outer Join
+      \end{enumerate}
+    \end{column}
+    
+    \begin{column}{.5\textwidth}
+      \begin{enumerate}
+      \item {\color{red}DO NOT USE\@!}
+      \item \textbf{Very Useful.}
+      \item \textbf{Very Useful.}
+      \item Most of you should not use this.
+      \item You will rarely use this.
+      \end{enumerate}
+    \end{column}
+
+  \end{columns}
+
+  \bigskip
+  \bigskip
+  \bigskip
+  \begin{itemize}
+  \item Some of these are more useful than others.
+  \end{itemize}
+  
+
+\end{frame}  
+
 \begin{frame}
+  \frametitle{Result Set Order}
+  
+  \textbf{The No Particular Order Guarantee:}
+
+  \begin{itemize}
+  \item Example queries and result sets provided for each join type.
+  \item Result sets shown ordered by EID or DEPT\_ID for readability.
+  \item ANSI SQL does not guarantee the order of the result set,
+    unless specified by an Order By clause.
+  \end{itemize}
+
+\end{frame}
+
+\subsection{Cross Join} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   \frametitle{Cross Join: Discussion}
+
+  \textbf{Cross Join:}
+
+  \bigskip
   \begin{itemize}
   \item Returns the Cartesian product of the tables in the FROM
-    clause. 
-  \item This is bad.
-  \item These tables are tiny, so it doesn't really matter.
-  \item But if you do this on a table like RECIP\_PROFILE, you are
-    going to get a nasty call from Samir.
+    clause.
+  \item Incorrectly referred to as a Cartesian Join. 
+  \item Can be written explicitly and implicitly.
+  \item Writing a Cross Join is {\color{red} \textbf{ALMOST ALWAYS}} a bad idea.
   \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]
+\begin{frame}[fragile] %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   \frametitle{Explicit Cross Join: Example}
 
-  Question: How many rows will the following query return?
+  \textbf{Question:} How many rows will the following query return?
   \bigskip
 
-  \begin{lstlisting}[title={\tiny Source: https://github.com/Choens/sql-survival-guide/blob/master/sql/04-joins/cross-joins.sql}]
-   SELECT *
-   FROM EMPLOYEES empl cross join DEPARTMENTS dept
-   ; 
+  \begin{lstlisting}[title={\tiny Source: https://github.com/Choens/sql-survival-guide/blob/master/sql/04-joins/cross-join.sql}]
+    select *
+    from DEPARTMENTS dept cross join EMPLOYEES empl
+    ;
   \end{lstlisting}
   
   \bigskip
+  \bigskip
   \pause 
-  Answer: 24 rows!
+  \textbf{Answer:} 24 rows!
   
 \end{frame}
 
-\begin{frame}
-  \frametitle{Cross Join: Results}
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Cross Join: Example Result Set}
+
+  \begin{columns}[T]
+    \begin{column}{.5\textwidth}
+      \textbf{Left Table: DEPARTMENTS}
+      
+      \medskip
+      \begin{center}
+        \tiny{
+          \begin{tabulary}{\textwidth}{CLCC}
+            DEPT\_ID & DEPT\_NAME  & DEPT\_FLOOR &            \\
+            \hline
+            31       & Sales       & 1           & \rightarrow \\
+            31       & Sales       & 1           & \rightarrow \\
+            31       & Sales       & 1           & \rightarrow \\
+            31       & Sales       & 1           & \rightarrow \\
+            31       & Sales       & 1           & \rightarrow \\
+            31       & Sales       & 1           & \rightarrow \\
+          \end{tabulary}
+        }
+
+      \end{center}
+    \end{column}
+    
+    \begin{column}{.5\textwidth}
+      \textbf{Right Table: EMPLOYEES}
+      
+      \medskip
+      \begin{center}
+        \tiny{
+          \begin{tabulary}{\textwidth}{CRCLLC}
+           & EID & DEPT\_ID & LAST\_NAME & FIRST\_NAME \\
+           \hline
+         \leftarrow  & 1   & 31       & Rafferty   & Gerry       \\
+         \leftarrow  & 3   & 33       & Jones      & Jon         \\
+         \leftarrow  & 5   & 33       & Heisenberg & Werner      \\
+         \leftarrow  & 7   & 34       & Robinson   & Elizabeth   \\
+         \leftarrow  & 9   & 34       & Smith      & Jefferson   \\        
+         \leftarrow  & 11  & NULL     & Williams   & Serena      \\
+          \end{tabulary}
+        }
+      \end{center}
+
+    \end{column}
+
+  \end{columns}
+
+  \bigskip
+  \begin{center}
+    \textbf{N Rows Returned: } (N Rows Left Table) * (N Rows Right Table)
+    \[ 4 \cdot 6 = 24 \]
+  \end{center}
+
+\end{frame}
+
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Cross Join: Result Set}
 
   \begin{center}
     {\tiny
@@ -283,91 +503,1154 @@ language=SQL
 
 \end{frame}
 
-\begin{frame}[containsverbatim]
+\begin{frame}[containsverbatim] %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   \frametitle{Implicit Cross Join: Example}
- 
-  \begin{lstlisting}[title={\tiny Source: https://github.com/Choens/sql-survival-guide/blob/master/sql/04-joins/cross-joins.sql}]
-    SELECT *
-    FROM EMPLOYEES empl, DEPARTMENTS dept
+  
+  \textbf{Question:} How many rows will the following query return?
+  \bigskip
+
+  \begin{lstlisting}[title={\tiny Source: https://github.com/Choens/sql-survival-guide/blob/master/sql/04-joins/cross-join.sql}]
+    select *
+    from EMPLOYEES empl, DEPARTMENTS dept
     ;
   \end{lstlisting}
   \bigskip
-  \begin{itemize}
-  \item Also returns 24 rows.
-  \item You can do the same thing implicitly. (Don't!)
-  \item What does this look like?
-  \end{itemize}
+  
+  \textbf{Answer: } Returns the same 24 rows.
+  
   
 \end{frame}
 
-\begin{frame}
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   \frametitle{Cross Join: Results}
+  \textbf{Cross Join:}
+  
+  \bigskip
   \begin{itemize}
-  \item Cross Joins Are Dangerous!
-  \item RECIP\_PROFILE == Phone Call From Samir.
-  \item IMPLICIT CROSS JOIN Looks Like IMPLICIT INNER JOIN.
+  \item Cross Join == Danger!
+  \item Returns the maximum number of rows possible.
+  \item I have never written a Cross Join outside of a training environment.
+  \item You probably won't either.
   \end{itemize}
 \end{frame}
 
-%% Inner Joins -----------------------------------------------------------------
-\begin{frame}[containsverbatim]
+\subsection{Inner Join} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[containsverbatim] %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   \frametitle{Inner Join: Discussion}
-  \begin{lstlisting} 
-    select * from EMPLOYEES;
-  \end{lstlisting}
+
+  \textbf{Inner Join:}
+
+  \bigskip
+  \begin{itemize}
+  \item Returns all records which have matching records in both
+    tables, according to the Join clause or WHERE clause.
+  \item Can be written explicitly or implicitly.
+  \item Returns the least number of rows.
+  \end{itemize}
 \end{frame}
 
-\begin{frame}
-  \frametitle{Inner Join: Example}
+\begin{frame}[fragile] %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Explicit Inner Join: Example}
+
+  \textbf{Question:} How many rows will the following query return?
+  \bigskip
+
+  \begin{lstlisting}[title={\tiny Source: https://github.com/Choens/sql-survival-guide/blob/master/sql/04-joins/cross-join.sql}]
+    select *
+    from EMPLOYEES empl inner join DEPARTMENTS dept
+    on empl.dept_id = dept.dept_id
+    ;
+  \end{lstlisting}
+
+  \bigskip
+  \pause
+  \textbf{Answer:} 5 rows
+
+\end{frame}
+
+\begin{frame}[fragile] %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Inner Join: Example Result Set (1)}
+
+  \bigskip
+  \begin{columns}[T]
+    \begin{column}{.5\textwidth}
+      \textbf{Left Table: EMPLOYEES}
+      
+      \medskip
+      \begin{center}
+        \tiny{
+          \begin{tabulary}{\textwidth}{RCLLC}
+            EID & DEPT\_ID & LAST\_NAME & FIRST\_NAME &            \\
+            \hline
+            1   & 31       & Rafferty   & Gerry       & \rightarrow \\
+          \end{tabulary}
+        }
+
+      \end{center}
+    \end{column}
+    
+    \begin{column}{.5\textwidth}
+      \textbf{Right Table: DEPARTMENTS}
+      
+      \medskip
+      \begin{center}
+        \tiny{
+          \begin{tabulary}{\textwidth}{CCLC}
+                      & DEPT\_ID & DEPT\_NAME  & DEPT\_FLOOR \\
+           \hline
+           \leftarrow & 31       & Sales       & 1           \\
+          \end{tabulary}
+        }
+      \end{center}
+
+    \end{column}
+
+  \end{columns}
+
+  \bigskip
+  \textbf{Result Set: }
+  
+  \begin{itemize}
+  \item Includes all rows in both tables which match via the `on'
+    statement.
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile] %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Inner Join: Example Result Set (2)}
+
+  \bigskip
+  \begin{columns}[T]
+    \begin{column}{.5\textwidth}
+      \textbf{Left Table: EMPLOYEES}
+      
+      \medskip
+      \begin{center}
+        \tiny{
+          \begin{tabulary}{\textwidth}{RCLLC}
+            EID & DEPT\_ID & LAST\_NAME & FIRST\_NAME &            \\
+            \hline
+            3   & 33       & Jones      & Jon         & \rightarrow \\
+            5   & 33       & Heisenberg & Werner      & \rightarrow \\
+          \end{tabulary}
+        }
+
+      \end{center}
+    \end{column}
+    
+    \begin{column}{.5\textwidth}
+      \textbf{Right Table: DEPARTMENTS}
+      
+      \medskip
+      \begin{center}
+        \tiny{
+          \begin{tabulary}{\textwidth}{CCLC}
+                       & DEPT\_ID & DEPT\_NAME  & DEPT\_FLOOR \\
+           \hline
+           \leftarrow  & 33       & Engineering & 1           \\
+           \leftarrow  & 33       & Engineering & 1           \\
+          \end{tabulary}
+        }
+      \end{center}
+
+    \end{column}
+
+  \end{columns}
+
+  \bigskip
+  \textbf{Result Set: }
+  
+  \begin{itemize}
+  \item Dept 33 returned twice, because it matches two employees.
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Inner Join: Result Set}
+  \begin{center}
+    {\tiny
+      \begin{tabulary}{\textwidth}{RCLLCCLC}
+        EID & DEPT\_ID & LAST\_NAME & FIRST\_NAME & GENDER & DEPT\_ID & DEPT\_NAME  & DEPT\_FLOOR \\
+        \hline
+        1   & 31       & Rafferty   & Gerry       & M      & 31       & Sales       & 1           \\
+        3   & 33       & Jones      & Jon         & M      & 33       & Engineering & 3           \\
+        5   & 33       & Heisenberg & Werner      & M      & 33       & Engineering & 3           \\
+        7   & 34       & Robinson   & Elizabeth   & F      & 34       & Clerical    & 2           \\
+        9   & 34       & Smith      & Jefferson   & M      & 34       & Clerical    & 2           \\
+      \end{tabulary}
+    }
+  \end{center}
+
+  \bigskip
+  \textbf{Question: } What happened to Dept 35?
+  
+  \pause
+  \bigksip
+  \textbf{Answer: } Dropped because there aren't any employees in
+  Marketing.
+
+\end{frame}
+
+\begin{frame}[fragile] %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Implicit Inner Join: Example}
+
+  This should look familiar:
+  \bigskip
+
+  \begin{lstlisting}[title={\tiny Source: https://github.com/Choens/sql-survival-guide/blob/master/sql/04-joins/cross-join.sql}]
+    select *
+    from EMPLOYEES empl, DEPARTMENTS dept
+    where empl.dept_id = dept.dept_id
+    ;
+  \end{lstlisting}
+
+  \bigskip
+  \textbf{Result Set:}
+  \begin{itemize}
+  \item Also returns 5 rows.
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Why Not Use Implicit Join Syntax?}
+
+  \textbf{Question:} What's the difference?
+  \begin{itemize}
+  \item Implicit Cross Join
+  \item Implicit Inner Join
+  \end{itemize}
+  
+  \bigskip
+  \pause
+  \textbf{Answer:} The WHERE clause.
+  
+  \bigskip
+  \begin{itemize}
+  \item An Implicit Inner Join is just an optimized Cross Join!
+  \item SQL optimizers convert it to explicit Inner Join.
+  \item If followed explicitly it could be S.\@L.\@O.\@W.\@
+  \item Implicit Join syntax is deprecated. (Geek-speak for don't do
+    it.)
+  \item Too easy to write a Cross Join.
+  \end{itemize}
+
   
 \end{frame}
 
-%% Left Outer Joins ------------------------------------------------------------
 \begin{frame}
+  \frametitle{Other Inner Joins}
+
+  \textbf{We have to move on but:}
+  \begin{itemize}
+  \item Inner Joins are really useful.
+  \item See inner-join.sql for more examples and ways to write Inner Joins.
+  \end{itemize}
+
+\end{frame}
+
+\subsection{Left Outer Join} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Outer Join}
+
+  \textbf{Outer Join:}
+
+  \begin{itemize}
+  \item The result set from Outer Join retains more records than Inner
+    Join.
+  \item Types of Outer Join:
+    \begin{itemize}
+    \item Left Outer Join (Left Join)
+    \item Right Outer Join (Right Join)
+    \item Full Outer Join
+    \end{itemize}
+  \item Each has different rules for which rows are part of the result set.
+  \end{itemize}
+\end{frame}
+
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   \frametitle{Left Outer Join: Discussion}
-  TODO
+
+  \textbf{Left Outer Join:}
+
+  \begin{itemize}
+  \item Result set includes all members of the `left' table.
+  \item When a row in the left table does not match any row in the
+    right table, there will be NULLS in all columns from the right
+    table.
+  \item Left Join is the same as Left Outer Join
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile] %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Left Outer Join: Example} 
+  
+  \textbf{Question:} How many rows will the following query return?
+  \bigskip
+
+  \begin{lstlisting}[title={\tiny Source: https://github.com/Choens/sql-survival-guide/blob/master/sql/04-joins/left-join.sql}]
+    select *
+    from EMPLOYEES empl left join DEPARTMENTS dept
+    on empl.department_id = dept_dept_id
+    ;
+  \end{lstlisting}
+  
+  \bigskip
+  \textbf{Note: }
+  \begin{itemize}
+  \item EMPLOYEES is the Left Table.
+  \item DEPARTMENTS is the Right Table.
+  \item I really hope you can see why.
+  \end{itemize}
+  
+\end{frame}
+
+\begin{frame}[fragile] %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Left Outer Join: Example} 
+  
+  \textbf{Question:} How many rows will the following query return?
+  \bigskip
+
+  \begin{lstlisting}[title={\tiny Source: https://github.com/Choens/sql-survival-guide/blob/master/sql/04-joins/left-join.sql}]
+    select *
+    from EMPLOYEES empl left join DEPARTMENTS dept
+    on empl.department_id = dept_dept_id
+    ;
+  \end{lstlisting}
+  
+  \bigskip
+  \textbf{Answer:} 6 rows
+
+\end{frame}
+
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Left Outer Join: Example Result Set (1)}
+
+  \begin{columns}[T]
+    \begin{column}{.5\textwidth}
+      \textbf{Left Table: EMPLOYEES}
+      
+      \medskip
+      \begin{center}
+        \tiny{
+          \begin{tabulary}{\textwidth}{CCCCC}
+            EID & DEPT\_ID & LAST\_NAME & FIRST\_NAME &            \\
+            \hline
+            1   & 31       & Rafferty   & Gerry       & \rightarrow \\
+          \end{tabulary}
+        }
+
+      \end{center}
+    \end{column}
+    
+    \begin{column}{.5\textwidth}
+      \textbf{Right Table: DEPARTMENTS}
+      
+      \medskip
+      \begin{center}
+        \tiny{
+          \begin{tabulary}{\textwidth}{CCC}
+            DEPT\_ID & DEPT\_NAME  & DEPT\_FLOOR \\
+            \hline
+            31       & Sales       & 1           \\
+          \end{tabulary}
+        }
+      \end{center}
+
+    \end{column}
+
+  \end{columns}
+
+  \bigskip
+  \begin{center}
+    \textbf{Result: } For matched rows, the result set is
+    identical to Inner Join.
+  \end{center}
+
+\end{frame}
+
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Left Outer Join: Example Result Set (2)}
+
+  \begin{columns}[T]
+    \begin{column}{.5\textwidth}
+      \textbf{Left Table: EMPLOYEES}
+      
+      \medskip
+      \begin{center}
+        \tiny{
+          \begin{tabulary}{\textwidth}{RCLLC}
+            EID & DEPT\_ID & LAST\_NAME & FIRST\_NAME &            \\
+            \hline
+            11  & NULL     & Williams   & Serena      & \rightarrow \\
+          \end{tabulary}
+        }
+
+      \end{center}
+    \end{column}
+    
+    \begin{column}{.5\textwidth}
+      \textbf{Right Table: DEPARTMENTS}
+      
+      \medskip
+      \begin{center}
+        \tiny{
+          \begin{tabulary}{\textwidth}{CLC}
+            DEPT\_ID & DEPT\_NAME  & DEPT\_FLOOR \\
+            \hline
+            NULL     & NULL        & NULL        \\
+          \end{tabulary}
+        }
+      \end{center}
+
+    \end{column}
+
+  \end{columns}
+
+  \bigskip
+  \begin{center}
+    \textbf{Result: } An Inner Join would have dropped this row.
+  \end{center}
+
+\end{frame}
+
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Left Outer Join: Result Set}
+  \begin{center}
+    {\tiny
+      \begin{tabulary}{\textwidth}{RCLLCCLC}
+        EID & DEPT\_ID & LAST\_NAME & FIRST\_NAME & GENDER & DEPT\_ID & DEPT\_NAME  & DEPT\_FLOOR \\
+        \hline
+        1   & 31       & Rafferty   & Gerry       & M      & 31       & Sales       & 1           \\
+        3   & 33       & Jones      & Jon         & M      & 33       & Engineering & 3           \\
+        5   & 33       & Heisenberg & Werner      & M      & 33       & Engineering & 3           \\
+        7   & 34       & Robinson   & Elizabeth   & F      & 34       & Clerical    & 2           \\
+        9   & 34       & Smith      & Jefferson   & M      & 34       & Clerical    & 2           \\
+        11   & NULL     & Williams   & Serena      & NULL   & NULL     & NULL        & NULL        \\
+      \end{tabulary}
+    }
+  \end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Left Outer Join: DANGER!}
+    \textbf{Question:} How many rows will the following queries
+    return?
+
+    \textbf{Hint:} They return the same number of rows.
+  \bigskip
+
+  \begin{lstlisting}[title={\tiny Source: https://github.com/Choens/sql-survival-guide/blob/master/sql/04-joins/left-join.sql}]
+    select *
+    from EMPLOYEES empl left join DEPARTMENTS dept
+    on empl.dept_id = dept.dept_id
+    where dept.dept_id < 34
+    ;
+  \end{lstlisting}
+
+  \begin{lstlisting}[title={\tiny Source: https://github.com/Choens/sql-survival-guide/blob/master/sql/04-joins/left-join.sql}]
+    select *
+    from EMPLOYEES empl, DEPARTMENTS dept
+    where
+        empl.dept_id = dept.dept_id 
+        and dept.dept_id < 34
+    ;
+  \end{lstlisting}
+  
 \end{frame}
 
 \begin{frame}
-  \frametitle{Left Outer Join: Example}
-  TODO
+  \frametitle{Left Outer Join: DANGER!}
+  {\huge \textbf{Answer: }Only 3 rows.}
+
 \end{frame}
 
-%% Right Outer Joins -----------------------------------------------------------
+\begin{frame}[fragile]
+  \frametitle{Left Outer Join: DANGER!}
+    \textbf{Question:} Why doesn't this return 6 rows?
+  \bigskip
+
+  \begin{lstlisting}[title={\tiny Source: https://github.com/Choens/sql-survival-guide/blob/master/sql/04-joins/left-join.sql}]
+    select *
+    from EMPLOYEES empl left join DEPARTMENTS dept
+    on empl.dept_id = dept.dept_id
+    where dept.dept_id < 34
+    ;
+  \end{lstlisting}
+  
+  \bigskip
+  \pause 
+  \textbf{Answer:} SQL Order of Operations!
+  \begin{itemize}
+  \item The FROM clause returns 6 rows.
+  \item The WHERE clause runs AFTER the FROM clause, and drops 3 rows.
+  \item End Result: 3 rows returned.
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Left Outer Join: Danger!}
+
+  \begin{lstlisting}[title={\tiny Source:
+      https://github.com/Choens/sql-survival-guide/blob/master/sql/04-joins/left-join.sql}]
+    select *
+    from (
+           -- This sub-query returns 6 rows.
+           select *
+           from EMPLOYEES empl left join DEPARTMENTS dept
+           on empl.dept_id = dept.dept_id
+         ) src0
+    -- But then ommits three of those rows from the final result set.     
+    where src0.dept_id < 34
+    ;
+  \end{lstlisting}
+
+  \bigskip
+  This highlights what the former query is doing. \\
+  It is easier to understand why this only returns 3 rows.
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Left Outer Join: DANGER!}
+    \textbf{Question:} How many rows will the following query return?
+  \bigskip
+
+  \begin{lstlisting}[title={\tiny Source: https://github.com/Choens/sql-survival-guide/blob/master/sql/04-joins/left-join.sql}]
+    select *
+    from EMPLOYEES empl left join DEPARTMENTS dept
+    on empl.dept_id = dept.dept_id
+       and dept.dept_id < 34
+    ;
+  \end{lstlisting}
+  
+  \bigskip
+  \pause 
+  \textbf{Answer:} 6 rows
+  \begin{itemize}
+  \item Moved the filter statement to the FROM clause.
+  \item It is OK to have a WHERE clause that refers to the columns in
+    the Left Table (EMPLOYEES).
+  \end{itemize}
+
+\end{frame}
+
+
+
+\subsection{Right Outer Join} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \begin{frame}
   \frametitle{Right Outer Join: Discussion}
-  TODO
+  
+  \textbf{Right Outer Join:}
+
+  \bigskip
+  \begin{itemize}
+  \item Basically a left join with the table order reversed.
+  \item When a row in the right table does not match any row in the
+    left table, there will be NULLS in all columns from the left
+    table.
+  \item Right Join is the same as Right Outer Join
+  \item Speakers of LTR languages tend to prefer Left Joins.
+  \item Speakers of RTL languages often prefer  Right Joins.
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile] %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Right Outer Join: Example}
+
+  \textbf{Question:} How many rows will the following query return?
+  \bigskip
+
+  \begin{lstlisting}[title={\tiny Source: https://github.com/Choens/sql-survival-guide/blob/master/sql/04-joins/right-join.sql}]
+    select *
+    from EMPLOYEES empl right join DEPARTMENTS dept
+    on empl.dept_id = dept.dept_id
+    ;
+  \end{lstlisting}
+
+  \smallskip
+  \textbf{Note: }Not supported by some SQL implementations such as SQLite.
+  
+  \bigskip
+  \pause 
+  \textbf{Answer:} 6 rows
+  
+\end{frame}
+
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Right Outer Join: Example Result Set (1)}
+  \begin{columns}[T]
+    \begin{column}{.5\textwidth}
+      \textbf{Left Table: EMPLOYEES}
+      
+      \medskip
+      \begin{center}
+        \tiny{
+          \begin{tabulary}{\textwidth}{CCCCC}
+            EID & DEPT\_ID & LAST\_NAME & FIRST\_NAME \\
+            \hline
+            1   & 31       & Rafferty   & Gerry       \\
+          \end{tabulary}
+        }
+
+      \end{center}
+    \end{column}
+    
+    \begin{column}{.5\textwidth}
+      \textbf{Right Table: DEPARTMENTS}
+      
+      \medskip
+      \begin{center}
+        \tiny{
+          \begin{tabulary}{\textwidth}{CCCC}
+                       & DEPT\_ID & DEPT\_NAME  & DEPT\_FLOOR \\
+            \hline
+            \leftarrow & 31       & Sales       & 1           \\
+          \end{tabulary}
+        }
+      \end{center}
+
+    \end{column}
+
+  \end{columns}
+
+  \bigskip
+  \begin{center}
+    \textbf{Result: } For matched rows, the result set is the same as
+    Inner Join.
+  \end{center}
+
+\end{frame}
+
+\begin{frame}[fragile] %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Right Outer Join: Example Result Set (2)}
+  \begin{columns}[T]
+    \begin{column}{.5\textwidth}
+      \textbf{Left Table: EMPLOYEES}
+      
+      \medskip
+      \begin{center}
+        \tiny{
+          \begin{tabulary}{\textwidth}{CCCC}
+            EID  & DEPT\_ID & LAST\_NAME & FIRST\_NAME \\
+            \hline
+            NULL & NULL     & NULL       & NULL         \\
+          \end{tabulary}
+        }
+
+      \end{center}
+    \end{column}
+    
+    \begin{column}{.5\textwidth}
+      \textbf{Right Table: DEPARTMENTS}
+      
+      \medskip
+      \begin{center}
+        \tiny{
+          \begin{tabulary}{\textwidth}{CCCC}
+                       & DEPT\_ID & DEPT\_NAME  & DEPT\_FLOOR \\
+            \hline
+            \leftarrow & 35       & Marketing   & 3            \\
+          \end{tabulary}
+        }
+      \end{center}
+
+    \end{column}
+
+  \end{columns}
+
+  \bigskip
+  \textbf{Result: } 
+  \begin{itemize}
+  \item The Right Join keeps Dept 35 in the result set.
+  \item The same thing can be written as a Left Join:
+  \end{itemize} 
+
+  \begin{lstlisting}[title={\tiny Source: https://github.com/Choens/sql-survival-guide/blob/master/sql/04-joins/right-join.sql}]
+    select *
+    from DEPARTMENTS dept left join EMPLOYEES empl
+    on dept.dept_id = empl.dept_id
+    ;
+  \end{lstlisting}
+
+\end{frame}
+
+\begin{frame}[fragile] %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Right Outer Join: Result Set}
+  \begin{center}
+    {\tiny
+      \begin{tabulary}{\textwidth}{RCLLCCLC}
+        EID  & DEPT\_ID & LAST\_NAME & FIRST\_NAME & GENDER & DEPT\_ID & DEPT\_NAME  & DEPT\_FLOOR \\
+        \hline
+        1    & 31       & Rafferty   & Gerry       & M      & 31       & Sales       & 1           \\
+        3    & 33       & Jones      & Jon         & M      & 33       & Engineering & 3           \\
+        5    & 33       & Heisenberg & Werner      & M      & 33       & Engineering & 3           \\
+        7    & 34       & Robinson   & Elizabeth   & F      & 34       & Clerical    & 2           \\
+        9    & 34       & Smith      & Jefferson   & M      & 34       & Clerical    & 2           \\
+        NULL & NULL     & NULL       & NULL        & NULL   & 35       & Marketing   & 3           \\
+      \end{tabulary}
+    }
+  \end{center}
+
+  \bigskip
+  \textbf{Question: }What happened to Serena Williams?
+
+  \bigskip
+  \pause  
+  \textbf{Answer: } Because DEPT\_ID is NULL, she is not in the result
+  set.
+
 \end{frame}
 
 \begin{frame}
-  \frametitle{Right Outer Join: Example}
-  TODO
+  \frametitle{Right Outer Join: Danger!}
+  
+  \textbf{Danger Will Robinson! Danger!}
+  \begin{itemize}
+  \item Right Outer Joins are subject to the same dangers as Left
+    Outer Joins.
+  \item Conceptualizing Right Joins can be hard for native English speakers.
+  \item Using left and right joins in the same query is TROUBLE\@.
+  \end{itemize}
 \end{frame}
 
-%% Full Outer Joins ------------------------------------------------------------
+\subsection{Full Outer Join} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \begin{frame}
   \frametitle{Full Outer Join: Discussion}
-  TODO
+  
+  \textbf{Full Outer Join:}
+
+  \begin{itemize}
+  \item Combines the effect of applying both left and right outer
+    joins.
+  \item Result set includes all rows from both tables, at least once.
+  \item Where rows do not match, the result set will have NULL values
+    for every column of the table that lacks a matching row
+  \item Not frequently used.
+  \item Can be used to understand why a result set is smaller than
+    expected.
+  \end{itemize}
+
 \end{frame}
 
-\begin{frame}
+\begin{frame}[fragile] %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   \frametitle{Full Outer Join: Example}
-  TODO
+
+  \textbf{Question:} How many rows will the following query return?
+
+  \begin{lstlisting}[title={\tiny Source: https://github.com/Choens/sql-survival-guide/blob/master/sql/04-joins/full-outer-join.sql}]
+    select *
+    from EMPLOYEES empl full outer join DEPARTMENTS dept
+    on empl.dept_id = dept.dept_id
+    ;
+  \end{lstlisting}
+
+  \bigskip
+  \textbf{Note: }Not supported by some SQL implementations such as
+  SQLite.
+
+  \bigskip
+  \pause
+  \textbf{Answer: }7 rows.
+ 
 \end{frame}
 
-%% Self Joins ------------------------------------------------------------------
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Full Outer Join: Example Result Set (1)}
+  
+  \begin{columns}[T]
+    \begin{column}{.5\textwidth}
+      \textbf{Left Table: EMPLOYEES}
+      
+      \medskip
+      \begin{center}
+        \tiny{
+          \begin{tabulary}{\textwidth}{CCCCC}
+            EID & DEPT\_ID & LAST\_NAME & FIRST\_NAME &            \\
+            \hline
+            1   & 31       & Rafferty   & Gerry       & \rightarrow \\
+          \end{tabulary}
+        }
+
+      \end{center}
+    \end{column}
+    
+    \begin{column}{.5\textwidth}
+      \textbf{Right Table: DEPARTMENTS}
+      
+      \medskip
+      \begin{center}
+        \tiny{
+          \begin{tabulary}{\textwidth}{CCCC}
+                       & DEPT\_ID & DEPT\_NAME  & DEPT\_FLOOR \\
+            \hline
+            \leftarrow & 31       & Sales       & 1           \\
+          \end{tabulary}
+        }
+      \end{center}
+
+    \end{column}
+
+  \end{columns}
+
+  \bigskip
+  \textbf{Result:}
+  \begin{itemize}
+  \item For matched rows, result set is same as Inner Join.
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Full Outer Join: Example Result Set (2)}
+  
+  \begin{columns}[T]
+    \begin{column}{.5\textwidth}
+      \textbf{Left Table: EMPLOYEES}
+      
+      \medskip
+      \begin{center}
+        \tiny{
+          \begin{tabulary}{\textwidth}{CCCCC}
+            EID & DEPT\_ID & LAST\_NAME & FIRST\_NAME &            \\
+            \hline
+            11  & NULL     & Williams   & Serena      & \rightarrow \\
+          \end{tabulary}
+        }
+
+      \end{center}
+    \end{column}
+    
+    \begin{column}{.5\textwidth}
+      \textbf{Right Table: DEPARTMENTS}
+      
+      \medskip
+      \begin{center}
+        \tiny{
+          \begin{tabulary}{\textwidth}{CCCC}
+                       & DEPT\_ID & DEPT\_NAME  & DEPT\_FLOOR \\
+            \hline
+            \leftarrow & NULL     & NULL        & NULL         \\
+          \end{tabulary}
+        }
+      \end{center}
+
+    \end{column}
+
+  \end{columns}
+
+  \bigskip
+  \textbf{Result:}
+  \begin{itemize}
+  \item For unmatched rows: KEEP THEM ALL!
+  \end{itemize}
+\end{frame}
+
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Full Outer Join: Example Result Set (3)}
+  
+  \begin{columns}[T]
+    \begin{column}{.5\textwidth}
+      \textbf{Left Table: EMPLOYEES}
+      
+      \medskip
+      \begin{center}
+        \tiny{
+          \begin{tabulary}{\textwidth}{CCCCC}
+            EID  & DEPT\_ID & LAST\_NAME & FIRST\_NAME &             \\
+            \hline
+            NULL & NULL     & NULL       & NULL        & \rightarrow \\
+          \end{tabulary}
+        }
+
+      \end{center}
+    \end{column}
+    
+    \begin{column}{.5\textwidth}
+      \textbf{Right Table: DEPARTMENTS}
+      
+      \medskip
+      \begin{center}
+        \tiny{
+          \begin{tabulary}{\textwidth}{CCCC}
+                       & DEPT\_ID & DEPT\_NAME  & DEPT\_FLOOR \\
+            \hline
+            \leftarrow & 35       & Marketing       & 3       \\
+          \end{tabulary}
+        }
+      \end{center}
+
+    \end{column}
+
+  \end{columns}
+
+  \bigskip
+  \textbf{Result:}
+  \begin{itemize}
+  \item For unmatched rows: KEEP THEM ALL!
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Full Outer Join: Result Set}
+  \begin{center}
+    {\tiny
+      \begin{tabulary}{\textwidth}{RCLLCCLC}
+        EID & DEPT\_ID & LAST\_NAME & FIRST\_NAME & GENDER & DEPT\_ID & DEPT\_NAME  & DEPT\_FLOOR \\
+        \hline
+        1    & 31       & Rafferty   & Gerry       & M      & 31       & Sales       & 1           \\
+        3    & 33       & Jones      & Jon         & M      & 33       & Engineering & 3           \\
+        5    & 33       & Heisenberg & Werner      & M      & 33       & Engineering & 3           \\
+        7    & 34       & Robinson   & Elizabeth   & F      & 34       & Clerical    & 2           \\
+        9    & 34       & Smith      & Jefferson   & M      & 34       & Clerical    & 2           \\
+        11   & NULL     & Williams   & Serena      & NULL   & NULL     & NULL        & NULL        \\
+        NULL & NULL     & NULL       & NULL        & NULL   & 35       & Marketing   & 3           \\
+      \end{tabulary}
+    }
+  \end{center}
+\end{frame}
+
+\section{Self Join} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \begin{frame}
   \frametitle{Self Join: Discussion}
-  TODO
+  \textbf{Self Join:}
+
+  \begin{itemize}
+  \item Joins a table to itself.
+  \item To do so, use one of the Joins we have already discussed.
+  \item This is more useful than you might think.
+  \item Often used in conjunction with a subquery.
+  \item To demo, we will need a new table.
+  \end{itemize}
+\end{frame}
+
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Table: SALES}
+
+  \begin{center}
+    \begin{tabulary}{\textwidth}{CLCC}
+      SALE\_ID & EID  & SALE\_VAL & SALE\_DT    \\
+      \hline
+      1        & 1    & 15.00     & 2015-01-01 \\
+      2        & 1    & 30.12     & 2015-06-15 \\
+      3        & 1    & 45.79     & 2015-03-02 \\
+    \end{tabulary}
+
+    \bigskip
+    \textbf{Aliased as `sale'.}
+
+  \end{center}
+
+  \bigskip
+  \textbf{Note:} Query to create this table is not in
+  create-tables.sql (yet).
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Self Join: Example}
+
+  \textbf{Question:} How many rows will the following query return?
+
+  \begin{lstlisting}[title={\tiny Source: https://github.com/Choens/sql-survival-guide/blob/master/sql/04-joins/self-join.sql}]
+    select sale.eid, sale.eid, sale.sale_val, sale_dt
+    from SALES sale 
+    inner join (
+                 -- Last Sale (ls)
+                 -- This query runs BEFORE the Join Clause.
+                 select eid, max(sale_dt) max_dt 
+                 from SALES 
+                 group by eid
+               ) ls
+    on sale.eid = ls.eid and sale.sale_dt = ls.max_dt
+    ;
+  \end{lstlisting}
+
+  \bigskip
+  \pause
+  \textbf{Answer:} Only 1 row.
+
+\end{frame}
+
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Self Join: Example Result Set}
+
+  \bigskip
+  \begin{columns}[T]
+    \begin{column}{.5\textwidth}
+      \textbf{Left Table: SALES}
+      
+      \medskip
+      \begin{center}
+        \tiny{
+          \begin{tabulary}{\textwidth}{CCCCC}
+            SALE\_ID & EID  & SALE\_VAL & SALE\_DT &    \\
+            \hline
+            1        & 1    & 15.00     & 2015-01-01 & \rightarrow \\
+          \end{tabulary}
+        }
+
+      \end{center}
+    \end{column}
+    
+    \begin{column}{.5\textwidth}
+      \textbf{Right Table: LAST SALE}
+      
+      \medskip
+      \begin{center}
+        \tiny{
+          \begin{tabulary}{\textwidth}{CCC}
+                       & EID & MAX\_DT    \\
+            \hline
+            \leftarrow & 1   & 2015-06-15 \\
+          \end{tabulary}
+        }
+      \end{center}
+
+    \end{column}
+
+  \end{columns}
+
+  \bigskip
+  \textbf{Result:}
+  \begin{itemize}
+  \item The sub-query (LAST SALE) is run first. It returns only 1 row.
+  \item Inner Join returns matching rows between SALE and LAST
+    SALE.
+  \item Each copy of a table must have a unique alias.
+  \item A subquery is not required, but is common.
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Self Outer Join: Result Set}
+  \begin{center}
+    {\tiny
+      \begin{tabulary}{\textwidth}{CLCC}
+        SALE\_ID & EID  & SALE\_VAL & SALE\_DT    \\
+        \hline
+        2        & 1    & 30.12     & 2015-06-15 \\
+      \end{tabulary}
+    }
+  \end{center}
+  
+\end{frame}
+
+\section{Aggregation} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Aggregation: How To}
+
+  Separate your thoughts into two steps.:
+
+  \begin{enumerate}
+  \item FROM
+  \item GROUP BY
+  \end{enumerate}
+  
+  \bigskip
+  \begin{center}
+  \textbf{Pro Tip: }Treat each step in the SQL Order of Operations as though it has an
+  independent result set.
+  \end{center}
+\end{frame}
+
+\section{Get Relational} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Relational Data: How To}
+  
+  Working with relational data is harder than working with flat data.
+
+  \bigskip
+  Some things to consider:
+
+  \begin{itemize}
+  \item What is the `unit' of your table(s)?
+  \item Valid data must have a unique identifier for each row in a table.
+    \begin{itemize}
+    \item People / Employees / Medicaid Recipients
+    \item Departments / Providers
+    \item Events / MDC Codes / Medications
+    \end{itemize}
+  \item The unique identifier changes across tables.
+    \begin{itemize}
+    \item One to One
+    \item One to Many
+    \item To use, you must understand how the tables are related.
+    \end{itemize}
+  \end{itemize}
+
 \end{frame}
 
 \begin{frame}
-  \frametitle{Self Join: Example}
-  TODO
+  \frametitle{Relational Data: Practical How To}
+  
+  Assume you are joining two tables (Table A, Table B):
+
+  \smallskip
+  Table A:
+  \begin{itemize}
+  \item Count the number of total records in Table A.
+  \item Count the number of distinct unique identifiers in Table A.
+  \item If they don't match. That isn't the unique identifier.
+  \item Look for Nulls in any column you are going to filter, sort or
+    join by.
+  \end{itemize}
+
+  \smallskip
+  Table B:
+  \begin{itemize}  
+  \item Count the number of total records in Table B.
+  \item Count the number of distinct unique identifiers in Table B.
+  \item If they don't match. That isn't the unique identifier.
+  \item Look for Nulls in any column you are going to filter, sort or
+    join by.
+  \end{itemize}
+
 \end{frame}
 
+\begin{frame}
+  \frametitle{Approach Relational Data Like a Scientist (1)}
+  
+  \textbf{Don't Assume, Prove:}
+  \begin{itemize}
+  \item You believe Table A has a one-to-many-relationship with Table
+    B.
+  \item Don't assume you know what is going on.
+  \item We are scientists. 
+  \item We have tools for this.
+  \end{itemize}
 
-\section{Questions?}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Approach Relational Data Like a Scientist (2)}
+    
+  \textbf{Science Tools For SQL:}
+  \begin{itemize}
+  \item Hypothesis: Every row in Table A matches one (+) rows in
+    Table B.
+  \item Test your hypothesis. Is it true?
+  \item Are you dropping any rows from A?
+  \item Are you duplicating unexpectedly?
+  \end{itemize}
+
+  \bigskip
+  \textbf{Pro Tip: }Build a complex query piece by piece! (Test each piece.)
+\end{frame}
+\section{ Wrap It Up} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
   \frametitle{Additional Information}
@@ -377,7 +1660,17 @@ language=SQL
 \end{frame}
 
 \begin{frame}
- \frametitle{Questions?}
+  \frametitle{Questions?}
+
+  \begin{center}
+    {\large That was a lot of information. And there is a lot of text
+      silly text on this slide. If you are still reading this,
+      congrats. You must be wide awake by now. And maybe, you are
+      wondering why I wrote all of this.}
+
+    \bigskip
+    {\huge  Who has questions?}
+  \end{center}
 
 \end{frame}
 
